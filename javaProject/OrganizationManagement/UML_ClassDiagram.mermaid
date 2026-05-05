@@ -1,0 +1,103 @@
+---
+title: Organization Management System - Composite Design Pattern UML
+---
+classDiagram
+    direction TB
+
+    class Component {
+        <<abstract>>
+        #String name
+        +Component(String name)
+        +String getName()
+        +void print(String indent)*
+        +void add(Component component)
+        +void remove(Component component)
+        +Worker findWorker(String workerName)*
+        +Group findGroup(String groupName)*
+        +boolean removeWorker(String workerName)*
+    }
+
+    class Worker {
+        -String role
+        +Worker(String name)
+        +Worker(String name, String role)
+        +void print(String indent)
+        +Worker findWorker(String workerName)
+        +Group findGroup(String groupName)
+        +boolean removeWorker(String workerName)
+    }
+
+    class Group {
+        -String bossName
+        -ArrayList~Component~ members
+        +Group(String name, String bossName)
+        +String getBossName()
+        +void add(Component component)
+        +void remove(Component component)
+        +void print(String indent)
+        +Worker findWorker(String workerName)
+        +Group findGroup(String groupName)
+        +boolean removeWorker(String workerName)
+    }
+
+    class OrganizationManager {
+        -Group organization
+        +OrganizationManager()
+        +void createOrganization()
+        +void printOrganization()
+        +boolean isOrganizationCreated()
+        +void validateName(String name)
+        +void addPerson(String unitName, String personName)
+        +void removePerson(String personName)
+    }
+
+    class Main {
+        +main(String[] args)$
+        -printMenu()$
+        -handleOption1(OrganizationManager manager)$
+        -handleOption2(OrganizationManager manager, Scanner scanner)$
+        -handleOption3(OrganizationManager manager, Scanner scanner)$
+    }
+
+    class InvalidMenuChoiceException {
+        +InvalidMenuChoiceException()
+        +InvalidMenuChoiceException(String message)
+    }
+
+    class OrganizationNotCreatedException {
+        +OrganizationNotCreatedException()
+        +OrganizationNotCreatedException(String message)
+    }
+
+    class UnitNotFoundException {
+        +UnitNotFoundException()
+        +UnitNotFoundException(String message)
+    }
+
+    class InvalidNameFormatException {
+        +InvalidNameFormatException()
+        +InvalidNameFormatException(String message)
+    }
+
+    class PersonNotFoundException {
+        +PersonNotFoundException()
+        +PersonNotFoundException(String message)
+    }
+
+    Component <|-- Worker : extends
+    Component <|-- Group : extends
+    Group "1" o-- "0..*" Component : members
+    OrganizationManager "1" --> "0..1" Group : organization
+    Main ..> OrganizationManager : uses
+
+    Exception <|-- InvalidMenuChoiceException
+    Exception <|-- OrganizationNotCreatedException
+    Exception <|-- UnitNotFoundException
+    Exception <|-- InvalidNameFormatException
+    Exception <|-- PersonNotFoundException
+
+    OrganizationManager ..> InvalidNameFormatException : throws
+    OrganizationManager ..> OrganizationNotCreatedException : throws
+    OrganizationManager ..> UnitNotFoundException : throws
+    OrganizationManager ..> PersonNotFoundException : throws
+    Main ..> InvalidMenuChoiceException : throws
